@@ -328,6 +328,12 @@ class AppCommand(object):
             ix.application.disable()
 
             self.callback()
+            from sgtk.platform.qt import QtGui
+
+            qt_app = QtGui.QApplication.instance()
+            import pyqt_clarisse
+            pyqt_clarisse.exec_(qt_app)
+
         except Exception:
             (exc_type, exc_value, exc_traceback) = sys.exc_info()
             message = (

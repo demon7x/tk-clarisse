@@ -510,7 +510,7 @@ class ClarisseEngine(Engine):
 
         # check that we are running an ok version of clarisse
         current_os = sys.platform.lower()
-        if current_os not in ["darwin", "win32", "linux64"]:
+        if current_os not in ["darwin", "win32", "linux2"]:
             raise tank.TankError(
                 "The current platform is not supported! Supported platforms "
                 "are Mac, Linux 64 and Windows 64."

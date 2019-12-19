@@ -124,23 +124,32 @@ class ClarisseLauncher(SoftwareLauncher):
         return engine_icon
 
     def scan_software(self):
-        """
-        Scan the filesystem for clarisse executables.
 
-        :return: A list of :class:`SoftwareVersion` objects.
-        """
-        self.logger.debug("Scanning for Clarisse executables...")
+        try:
+            import rez as _
+        except ImportError:
+            rez_path = self.get_rez_module_root()
+            if not rez_path:
+                raise EnvironmentError('rez is not installed and could not be automatically found. Cannot continue.')
+
+            sys.path.append(rez_path)
+        from rez.package_search import ResourceSearcher , ResourceSearchResultFormatter
+
+
+        searcher = ResourceSearcher()
+        formatter = ResourceSearchResultFormatter()
+        _ ,packages = searcher.search("clarisse")
 
         supported_sw_versions = []
-        for sw_version in self._find_software():
-            (supported, reason) = self._is_supported(sw_version)
-            if supported:
-                supported_sw_versions.append(sw_version)
-            else:
-                self.logger.debug(
-                    "SoftwareVersion %s is not supported: %s"
-                    % (sw_version, reason)
-                )
+        self.logger.debug("Scanning for clarisse executables...")
+        infos = formatter.format_search_results(packages)
+
+        for info in infos:
+            name,version = info[0].split("-")
+            
+
+            software = SoftwareVersion(version,name,"rez_init",self._icon_from_engine())
+            supported_sw_versions.append(software)
 
         return supported_sw_versions
 
