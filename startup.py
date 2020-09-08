@@ -149,7 +149,9 @@ class ClarisseLauncher(SoftwareLauncher):
             
 
             software = SoftwareVersion(version,name,"rez_init",self._icon_from_engine())
-            supported_sw_versions.append(software)
+            (supported, reason) = self._is_supported(software)
+            if supported:
+                supported_sw_versions.append(software)
 
         return supported_sw_versions
 
